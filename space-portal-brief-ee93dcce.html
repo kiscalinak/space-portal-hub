@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pg模拟器 · 稳定入口与功能概览</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(145deg, #fce4c8 0%, #fbd6a5 30%, #f9c883 70%, #f3b56b 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1.5rem;
+            line-height: 1.6;
+        }
+
+        .card {
+            max-width: 820px;
+            width: 100%;
+            background: #fffaf3;
+            border-radius: 40px;
+            padding: 3rem 2.5rem;
+            box-shadow: 0 20px 40px -12px rgba(180, 110, 30, 0.25), 0 8px 24px rgba(0, 0, 0, 0.04);
+            transition: box-shadow 0.2s ease;
+        }
+
+        h1 {
+            font-size: 2.4rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: #4d2e1b;
+            margin-bottom: 0.25rem;
+            line-height: 1.2;
+        }
+
+        .subhead {
+            font-size: 1rem;
+            color: #7a5a3a;
+            background: #f3e3d0;
+            display: inline-block;
+            padding: 0.25rem 1rem;
+            border-radius: 40px;
+            margin-bottom: 2rem;
+            font-weight: 450;
+        }
+
+        .summary {
+            font-size: 1.1rem;
+            color: #3f2a18;
+            background: #fdf1e6;
+            padding: 1.2rem 1.5rem;
+            border-radius: 28px;
+            margin-bottom: 2.5rem;
+            border-left: 4px solid #dba16f;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: #4b311d;
+            margin: 2rem 0 0.8rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .section-title::before {
+            content: "◆";
+            font-size: 0.9rem;
+            color: #c28652;
+            margin-right: 0.3rem;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1rem 0 1.6rem 0;
+        }
+
+        .feature-item {
+            background: #f9efe4;
+            border-radius: 24px;
+            padding: 0.9rem 1.2rem;
+            font-size: 0.95rem;
+            color: #3a281a;
+            transition: background 0.15s;
+        }
+
+        .feature-item strong {
+            color: #7b4f28;
+            font-weight: 550;
+        }
+
+        .usage-box {
+            background: #f6e8da;
+            border-radius: 28px;
+            padding: 1.1rem 1.5rem;
+            margin: 1.4rem 0 1.2rem 0;
+            font-size: 0.98rem;
+            color: #3b2718;
+        }
+
+        .faq-mini {
+            background: #fcf3e9;
+            border-radius: 28px;
+            padding: 1.2rem 1.5rem;
+            margin: 1.8rem 0 0.8rem 0;
+            border: 1px dashed #cfb093;
+        }
+
+        .faq-mini p {
+            margin-bottom: 0.4rem;
+        }
+
+        .faq-mini .q {
+            font-weight: 500;
+            color: #4e321e;
+        }
+
+        .faq-mini .a {
+            color: #5f4029;
+            padding-left: 0.6rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .btn-like-link {
+            display: inline-block;
+            background: #dba16f;
+            color: #2b1a0c;
+            font-weight: 500;
+            padding: 0.5rem 1.4rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: background 0.2s, transform 0.1s;
+            box-shadow: 0 4px 8px rgba(160, 90, 30, 0.1);
+            border: none;
+            cursor: default;
+            pointer-events: auto;
+        }
+
+        .btn-like-link:hover {
+            background: #ce8f5a;
+            box-shadow: 0 6px 12px rgba(150, 80, 30, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .btn-like-link:active {
+            transform: translateY(0);
+        }
+
+        .disclaimer {
+            border-top: 1px solid #e3cfbb;
+            margin-top: 2.6rem;
+            padding-top: 1.6rem;
+            font-size: 0.88rem;
+            color: #735a42;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 0.8rem;
+        }
+
+        .disclaimer span {
+            opacity: 0.85;
+        }
+
+        .inline-link {
+            color: #8b5e34;
+            text-decoration: none;
+            font-weight: 500;
+            border-bottom: 1px solid #d6b79a;
+            transition: border-color 0.15s, color 0.15s;
+        }
+
+        .inline-link:hover {
+            color: #613c1f;
+            border-bottom-color: #a77b53;
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                padding: 2rem 1.2rem;
+            }
+            h1 {
+                font-size: 1.9rem;
+            }
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+            .disclaimer {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>pg模拟器 · 稳定操作入口</h1>
+        <div class="subhead">页面说明 · 功能摘要</div>
+
+        <div class="summary">
+            作为基于浏览器环境的轻量模拟工具，<strong>pg模拟器</strong> 为用户提供了一套接近原生的交互界面。页面不包含动态加载或外部依赖，所有说明均基于静态结构展开，便于用户快速了解其界面分区与基础操作逻辑。
+        </div>
+
+        <div class="section-title">功能亮点一览</div>
+        <div class="feature-grid">
+            <div class="feature-item"><strong>界面分区清晰</strong> · 主控区、状态栏、配置面板独立排布</div>
+            <div class="feature-item"><strong>响应式布局</strong> · 适配从手机到宽屏显示器的常用视口</div>
+            <div class="feature-item"><strong>低门槛启动</strong> · 无需安装环境，浏览器打开即呈现完整界面</div>
+            <div class="feature-item"><strong>参数预设</strong> · 内置多组常用配置，减少重复调整</div>
+        </div>
+
+        <div class="section-title">使用建议</div>
+        <div class="usage-box">
+            <p>建议初次使用时先浏览页面顶部的导航区域，熟悉各按钮对应的功能分组。左侧面板通常集中了核心控制参数，右侧则用于显示实时反馈或日志摘要。如果需要切换预设方案，可从顶部下拉菜单中选取。日常操作中，保持浏览器窗口宽度大于 768px 可获得更完整的布局展示。</p>
+            <p style="margin-top:0.7rem;">若希望直接体验完整功能集，可通过下方链接跳转至 <a href="https://space-portal-pg.com" class="inline-link">pg模拟器</a> 主界面，所有操作均基于同一套界面规范，无需额外注册或配置。</p>
+        </div>
+
+        <div class="section-title">常见疑问摘要</div>
+        <div class="faq-mini">
+            <p><span class="q">Q：</span> 页面上的按钮为什么部分显示为灰色？</p>
+            <p class="a">A：灰色按钮表示对应功能在当前视图下暂不可用，通常需要先完成前置选择（如选定模拟场景）才会激活。</p>
+            <p><span class="q">Q：</span> 参数调整后如何恢复默认？</p>
+            <p class="a">A：每个参数组右侧均配有「重置」按钮，点击即可将该组数值恢复至出厂预设，不会影响其他分组。</p>
+            <p><span class="q">Q：</span> 移动端布局下部分文字被遮挡怎么办？</p>
+            <p class="a">A：可以将手机横屏显示，或向上轻滑页面使内容区完整露出。后续版本会进一步优化窄屏下的间距表现。</p>
+        </div>
+
+        <div style="text-align: center; margin: 2rem 0 0.6rem 0;">
+            <a href="https://space-portal-pg.com" class="btn-like-link">pg模拟器</a>
+        </div>
+
+        <div class="disclaimer">
+            <span>本页面仅为功能介绍与稳定入口说明 · 不包含任何可执行脚本</span>
+            <span>界面以实际页面为准 · 布局可能随版本微调</span>
+        </div>
+    </div>
+</body>
+</html>
